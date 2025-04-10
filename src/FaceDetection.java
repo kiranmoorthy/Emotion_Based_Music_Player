@@ -1,54 +1,73 @@
 import org.opencv.core.*;
-import org.opencv.highgui.HighGui;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.videoio.VideoCapture;
 
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+
 public class FaceDetection {
+
     static {
-        // Loads OpenCV library
+        // Load OpenCV DLL
         System.load(new java.io.File("native/windows/opencv_java4110.dll").getAbsolutePath());
+    }
+
+    // Loads Cascade XML File
+    static String cascadePath = new java.io.File("src/resources/haarcascade_frontalface_default.xml").getAbsolutePath();
+
+
+    // Converts Mat to BufferedImage for display in Swing
+    public static BufferedImage matToBufferedImage(Mat mat) {
+        int type = (mat.channels() > 1) ? BufferedImage.TYPE_3BYTE_BGR : BufferedImage.TYPE_BYTE_GRAY;
+        BufferedImage image = new BufferedImage(mat.width(), mat.height(), type);
+        mat.get(0, 0, ((DataBufferByte) image.getRaster().getDataBuffer()).getData());
+        return image;
     }
 
     public static void main(String[] args) {
 
-        VideoCapture camera=new VideoCapture(0);
-        if(!camera.isOpened()){
+        VideoCapture camera = new VideoCapture(0);
+        if (!camera.isOpened()) {
             System.out.println("❌ Error: Camera not found");
             return;
         }
 
-        CascadeClassifier faceCascade=new CascadeClassifier("src/resources/haarcascade_frontalface_default.xml");
-        if(faceCascade.empty()){
+        CascadeClassifier faceCascade = new CascadeClassifier(cascadePath);
+        if (faceCascade.empty()) {
             System.out.println("❌ Error: Haar Cascade XML file not found!");
             return;
         }
 
-        Mat frame=new Mat();
+        JFrame window = new JFrame("Face Detection");
+        JLabel label = new JLabel();
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setSize(640, 480);
+        window.add(label);
+        window.setVisible(true);
 
-        while(true){
-            if(camera.read(frame)){
-                Mat grayFrame=new Mat();
-                Imgproc.cvtColor(frame,grayFrame,Imgproc.COLOR_BGR2GRAY);
+        Mat frame = new Mat();
 
-                MatOfRect faces=new MatOfRect();
-                faceCascade.detectMultiScale(grayFrame,faces);
+        while (window.isVisible()) {
+            if (camera.read(frame)) {
 
-                for(Rect rect: faces.toArray()){
-                    Imgproc.rectangle(frame,rect.tl(),rect.br(),new Scalar(0,255,0),3);
+                Mat gray = new Mat();
+                Imgproc.cvtColor(frame, gray, Imgproc.COLOR_BGR2GRAY);
+
+                MatOfRect faces = new MatOfRect();
+                faceCascade.detectMultiScale(gray, faces);
+
+                for (Rect rect : faces.toArray()) {
+                    Imgproc.rectangle(frame, rect.tl(), rect.br(), new Scalar(0, 255, 0), 3);
                 }
 
-                HighGui.imshow("Face Detection",frame);
-            }
-
-            if(HighGui.waitKey(30)=='q'){
-                break;
+                ImageIcon image = new ImageIcon(matToBufferedImage(frame));
+                label.setIcon(image);
+                label.repaint();
             }
         }
 
         camera.release();
-        HighGui.destroyAllWindows();
-
-
     }
 }
