@@ -5,8 +5,9 @@ import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.videoio.VideoCapture;
 
 public class FaceDetection {
-    static{
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    static {
+        // Loads OpenCV library
+        System.load(new java.io.File("native/windows/opencv_java4110.dll").getAbsolutePath());
     }
 
     public static void main(String[] args) {

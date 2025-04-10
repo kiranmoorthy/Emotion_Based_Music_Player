@@ -5,9 +5,11 @@ import org.opencv.videoio.VideoCapture;
 
 public class CameraTest {
 
-    static{
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME); // Loads OpenCV Library
+    static {
+        // Loads OpenCV library
+        System.load(new java.io.File("native/windows/opencv_java4110.dll").getAbsolutePath());
     }
+
 
     public static void main(String[] args) {
         VideoCapture camera =new VideoCapture(0);
