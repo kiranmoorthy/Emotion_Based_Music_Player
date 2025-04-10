@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 
-public class FaceDetection {
+public class FaceDetectionTest {
 
     static {
         // Load OpenCV DLL
@@ -41,9 +41,9 @@ public class FaceDetection {
         }
 
         JFrame window = new JFrame("Face Detection");
-        JLabel label = new JLabel();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setSize(640, 480);
+        JLabel label = new JLabel();
         window.add(label);
         window.setVisible(true);
 
