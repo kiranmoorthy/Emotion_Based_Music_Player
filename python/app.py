@@ -42,7 +42,7 @@ def detect_emotion_for_duration_and_save(duration_seconds=1, output_file='../sha
 
     # Start the timer
     start_time = time.time()
-    dominant_emotion = "No Face Detected" # Default value if no face is seen
+    dominant_emotion = "Happy" # Default value if no face is seen
 
     print(f"Starting emotion detection for {duration_seconds} second(s).")
 
